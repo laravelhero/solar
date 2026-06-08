@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import { testimonials } from '../data/testimonials';
+import { company } from '../data/company';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Testimonials', href: '/testimonials' }];
+---
+<Layout
+  title="Customer Testimonials & Reviews"
+  description={`Read verified reviews from Apex Solar customers. Rated ${company.ratings.value}★ across ${company.ratings.count.toLocaleString()}+ reviews for residential, commercial and battery solar projects.`}
+  keywords={['solar reviews', 'solar testimonials', 'apex solar reviews']}
+  canonical="/testimonials"
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow="Customer Stories" title={`Rated ${company.ratings.value}★ by ${company.ratings.count.toLocaleString()}+ customers`} subtitle="Don't take our word for it — hear from the homeowners and businesses who power their lives with Apex Solar." crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container-xl">
+      <div class="columns-1 gap-6 sm:columns-2 lg:columns-3">
+        {testimonials.concat(testimonials).map((t) => (
+          <figure class="card mb-6 break-inside-avoid p-7">
+            <div class="flex items-center gap-1 text-solar-400">
+              {Array.from({ length: t.rating }).map(() => <Icon name="star" class="size-4 fill-solar-400" />)}
+            </div>
+            <blockquote class="mt-4 text-gray-700">“{t.quote}”</blockquote>
+            <figcaption class="mt-5 flex items-center gap-3 border-t border-gray-100 pt-5">
+              <span class="grid size-10 place-items-center rounded-full bg-gradient-to-br from-solar-400 to-solar-600 font-bold text-white">{t.name.charAt(0)}</span>
+              <div>
+                <p class="font-bold text-gray-900">{t.name}</p>
+                <p class="text-xs text-gray-500">{t.location} · {t.service}</p>
+              </div>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTA />
+</Layout>

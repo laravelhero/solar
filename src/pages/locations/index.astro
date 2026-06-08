@@ -1,0 +1,29 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import LocationGrid from '../../components/LocationGrid.astro';
+import CTA from '../../components/CTA.astro';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Locations', href: '/locations' }];
+---
+<Layout
+  title="Solar Service Areas Across the USA"
+  description="Apex Solar serves homes and businesses across Texas, California, Florida, Arizona, Nevada, Colorado, North Carolina and Georgia with local crews and local expertise."
+  keywords={['solar service areas', 'solar installation usa', 'local solar company']}
+  canonical="/locations"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Service Areas"
+    title="Local solar expertise, coast to coast"
+    subtitle="Local crews who know your climate, your utility and your incentives — across eight states and growing."
+    image="/images/locations/locations-hero.jpg"
+    imageAlt="Map of the USA with solar service area highlights"
+    crumbs={crumbs}
+  />
+  <section class="section">
+    <div class="container-xl">
+      <LocationGrid />
+    </div>
+  </section>
+  <CTA />
+</Layout>

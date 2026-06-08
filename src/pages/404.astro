@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { company } from '../data/company';
+---
+<Layout title="Page Not Found" description="The page you're looking for couldn't be found." robots="noindex, follow">
+  <section class="grid min-h-[70vh] place-items-center bg-energy-950 px-5">
+    <div class="text-center" data-reveal>
+      <p class="font-display text-7xl font-extrabold gradient-text sm:text-9xl">404</p>
+      <h1 class="mt-4 font-display text-2xl font-bold text-white sm:text-3xl">This page went off the grid</h1>
+      <p class="mx-auto mt-3 max-w-md text-energy-200">The page you're looking for doesn't exist or has moved. Let's get you back to the sunshine.</p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/" class="btn-primary">Back to Home</a>
+        <a href="/quote" class="btn bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/20">Get a Free Quote</a>
+      </div>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+        <a href="/services" class="text-energy-200 hover:text-solar-300">Services</a>
+        <a href="/projects" class="text-energy-200 hover:text-solar-300">Projects</a>
+        <a href="/blog" class="text-energy-200 hover:text-solar-300">Blog</a>
+        <a href={company.phoneHref} class="flex items-center gap-1 text-energy-200 hover:text-solar-300"><Icon name="phone" class="size-4" /> {company.phone}</a>
+      </div>
+    </div>
+  </section>
+</Layout>

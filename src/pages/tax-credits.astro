@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import { getFaqs } from '../data/faqs';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Solar Tax Credits', href: '/tax-credits' }];
+const faqs = getFaqs(['tax-credit', 'financing', 'battery-cost', 'commercial-roi']);
+const steps = [
+  { n: '1', title: 'Install your system', text: 'Have your solar (and/or battery) system installed and placed in service.' },
+  { n: '2', title: 'Keep your invoice', text: 'Save the final paid invoice — it documents your total qualified cost.' },
+  { n: '3', title: 'File IRS Form 5695', text: 'Claim 30% of your cost on your federal return for that tax year.' },
+  { n: '4', title: 'Roll forward any excess', text: 'If the credit exceeds your tax owed, the remainder carries to next year.' },
+];
+const qualifies = ['Solar panels & inverters', 'Battery storage (3 kWh+)', 'Racking & mounting', 'Electrical & wiring', 'Labor & installation', 'Permitting & inspection'];
+---
+<Layout
+  title="Federal Solar Tax Credit (30% ITC) — How to Claim It"
+  description="Everything you need to know about the 30% federal solar tax credit (Residential Clean Energy Credit) — what qualifies, who's eligible, and how to claim it on Form 5695."
+  keywords={['solar tax credit', '30% solar tax credit', 'residential clean energy credit', 'federal solar itc', 'form 5695']}
+  canonical="/tax-credits"
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow="Tax Credits" title="Claim 30% of your solar cost back" subtitle="The federal Residential Clean Energy Credit is the single biggest incentive available to American homeowners. Here's how it works." crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container-xl grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div>
+        <p class="eyebrow">The Big One</p>
+        <h2 class="mt-4 font-display text-3xl font-bold text-gray-900">A 30% dollar-for-dollar credit</h2>
+        <p class="mt-4 text-lg text-gray-600">The federal solar tax credit reduces your federal income taxes by <strong class="text-gray-900">30% of your total system cost</strong> — not a deduction, a direct credit. On a $24,000 system, that's <strong class="text-solar-600">$7,200</strong> back.</p>
+        <p class="mt-4 text-gray-600">It applies to ownership purchases and solar loans (not leases or PPAs), and any unused portion rolls forward to future tax years.</p>
+        <div class="mt-6 rounded-2xl bg-energy-50 p-5 text-sm text-energy-900 ring-1 ring-energy-100">
+          <Icon name="shield" class="mb-2 size-5 text-energy-600" />
+          This page is general information, not tax advice. Confirm your eligibility with a qualified tax professional.
+        </div>
+      </div>
+      <div class="card overflow-hidden">
+        <div class="bg-gradient-to-br from-solar-500 to-solar-600 p-8 text-white">
+          <p class="text-sm font-semibold text-solar-50">Example: $24,000 system</p>
+          <div class="mt-4 space-y-3 text-sm">
+            <div class="flex justify-between border-b border-white/20 pb-3"><span>System cost</span><span class="font-bold">$24,000</span></div>
+            <div class="flex justify-between border-b border-white/20 pb-3"><span>30% federal credit</span><span class="font-bold">– $7,200</span></div>
+            <div class="flex justify-between pt-1 text-lg"><span class="font-semibold">Net cost</span><span class="font-display font-extrabold">$16,800</span></div>
+          </div>
+        </div>
+        <div class="p-7">
+          <h3 class="font-display font-bold text-gray-900">What qualifies</h3>
+          <ul class="mt-4 grid grid-cols-2 gap-2">
+            {qualifies.map((q) => <li class="flex items-start gap-2 text-sm text-gray-600"><Icon name="check" class="mt-0.5 size-4 shrink-0 text-grid-500" /> {q}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Step by Step" title="How to claim your credit" />
+      <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map((s) => (
+          <div class="card p-7">
+            <span class="grid size-11 place-items-center rounded-full bg-solar-500 font-display text-lg font-bold text-white">{s.n}</span>
+            <h3 class="mt-4 font-display font-bold text-gray-900">{s.title}</h3>
+            <p class="mt-2 text-sm text-gray-500">{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="FAQ" title="Tax credit questions" class="mb-12" />
+      <FAQAccordion faqs={faqs} />
+    </div>
+  </section>
+
+  <CTA title="Maximize your tax credit" subtitle="We provide the complete documentation your tax preparer needs and design your system to capture every dollar you're entitled to." />
+</Layout>

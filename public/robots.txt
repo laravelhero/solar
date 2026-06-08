@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.apexsolar-usa.com/sitemap-index.xml

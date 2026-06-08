@@ -1,0 +1,50 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import BlogGrid from '../../../components/BlogGrid.astro';
+import CTA from '../../../components/CTA.astro';
+import { getPublishedPosts } from '../../../lib/blog';
+import { blogCategories, getCategory } from '../../../data/blogCategories';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return blogCategories.map((category) => ({
+    params: { category: category.slug },
+    props: { category, posts: posts.filter((p) => p.data.category === category.slug) },
+  }));
+}
+const { category, posts } = Astro.props;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Blog', href: '/blog' },
+  { name: category.name, href: `/blog/category/${category.slug}` },
+];
+---
+<Layout
+  title={`${category.name} — Solar Blog`}
+  description={`${category.description} Read expert ${category.name.toLowerCase()} articles from the Apex Solar team.`}
+  keywords={[category.name.toLowerCase(), 'solar blog', 'solar guides']}
+  canonical={`/blog/category/${category.slug}`}
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow="Blog Category" title={category.name} subtitle={category.description} crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container-xl">
+      <div class="mb-12 flex flex-wrap items-center justify-center gap-2">
+        <a href="/blog" class="rounded-full bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-200">All</a>
+        {blogCategories.map((c) => (
+          <a href={`/blog/category/${c.slug}`} class={`rounded-full px-4 py-2 text-sm font-semibold ${c.slug === category.slug ? 'bg-solar-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{c.name}</a>
+        ))}
+      </div>
+
+      {posts.length > 0 ? (
+        <BlogGrid posts={posts} />
+      ) : (
+        <p class="py-16 text-center text-gray-500">No articles in this category yet — check back soon!</p>
+      )}
+    </div>
+  </section>
+
+  <CTA />
+</Layout>

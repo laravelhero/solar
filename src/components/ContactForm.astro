@@ -1,0 +1,77 @@
+---
+// Lead-capture / quote form. Uses Alpine for client-side validation + a friendly
+// success state. Wire the action to your CRM / Netlify Forms / serverless endpoint.
+import { services } from '../data/services';
+import { company } from '../data/company';
+import Icon from './Icon.astro';
+interface Props { variant?: 'quote' | 'contact'; title?: string }
+const { variant = 'quote', title } = Astro.props;
+const heading = title ?? (variant === 'quote' ? 'Get your free solar quote' : 'Send us a message');
+---
+<div
+  class="card p-7 sm:p-8"
+  x-data="{ sent: false, loading: false,
+    submit(e) {
+      this.loading = true;
+      // TODO: POST to your endpoint. Demo: simulate success.
+      setTimeout(() => { this.loading = false; this.sent = true; }, 600);
+    }
+  }"
+>
+  <div x-show="!sent">
+    <h2 class="font-display text-2xl font-bold text-gray-900">{heading}</h2>
+    <p class="mt-1.5 text-sm text-gray-500">Fast, friendly, and no obligation. We typically reply within one business hour.</p>
+
+    <form class="mt-6 space-y-4" @submit.prevent="submit" name={variant} method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value={variant} />
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="name" class="mb-1.5 block text-sm font-semibold text-gray-700">Full name</label>
+          <input id="name" name="name" type="text" required autocomplete="name" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-solar-400 focus:ring-2 focus:ring-solar-100" placeholder="Jane Smith" />
+        </div>
+        <div>
+          <label for="phone" class="mb-1.5 block text-sm font-semibold text-gray-700">Phone</label>
+          <input id="phone" name="phone" type="tel" required autocomplete="tel" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-solar-400 focus:ring-2 focus:ring-solar-100" placeholder="(555) 123-4567" />
+        </div>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="email" class="mb-1.5 block text-sm font-semibold text-gray-700">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-solar-400 focus:ring-2 focus:ring-solar-100" placeholder="jane@email.com" />
+        </div>
+        <div>
+          <label for="zip" class="mb-1.5 block text-sm font-semibold text-gray-700">ZIP code</label>
+          <input id="zip" name="zip" type="text" inputmode="numeric" pattern="[0-9]{5}" required autocomplete="postal-code" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-solar-400 focus:ring-2 focus:ring-solar-100" placeholder="78701" />
+        </div>
+      </div>
+      <div>
+        <label for="service" class="mb-1.5 block text-sm font-semibold text-gray-700">I'm interested in</label>
+        <select id="service" name="service" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-solar-400 focus:ring-2 focus:ring-solar-100">
+          <option value="">Select a service…</option>
+          {services.map((s) => <option value={s.slug}>{s.menuTitle}</option>)}
+          <option value="not-sure">Not sure yet — help me decide</option>
+        </select>
+      </div>
+      <div>
+        <label for="message" class="mb-1.5 block text-sm font-semibold text-gray-700">Message <span class="font-normal text-gray-400">(optional)</span></label>
+        <textarea id="message" name="message" rows="3" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-solar-400 focus:ring-2 focus:ring-solar-100" placeholder="Tell us about your roof, goals or timeline…"></textarea>
+      </div>
+      <button type="submit" class="btn-primary w-full py-3.5 text-base" :disabled="loading">
+        <span x-show="!loading">{variant === 'quote' ? 'Get My Free Quote' : 'Send Message'}</span>
+        <span x-show="loading" x-cloak>Sending…</span>
+        <Icon name="arrow-right" class="size-4" />
+      </button>
+      <p class="text-center text-xs text-gray-400">By submitting you agree to be contacted by {company.name}. We never sell your data.</p>
+    </form>
+  </div>
+
+  <!-- Success state -->
+  <div x-show="sent" x-cloak class="py-10 text-center">
+    <span class="mx-auto grid size-16 place-items-center rounded-full bg-grid-50 text-grid-600">
+      <Icon name="check-circle" class="size-9" />
+    </span>
+    <h2 class="mt-5 font-display text-2xl font-bold text-gray-900">Thank you! 🎉</h2>
+    <p class="mx-auto mt-2 max-w-sm text-gray-500">Your request is in. A solar specialist will reach out within one business hour with your custom savings estimate.</p>
+    <a href={company.phoneHref} class="btn-ghost mt-6"><Icon name="phone" class="size-4" /> Or call us now</a>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+---
+import { company } from '../data/company';
+import Icon from './Icon.astro';
+interface Props {
+  title?: string;
+  subtitle?: string;
+  class?: string;
+}
+const {
+  title = 'See how much you could save with solar',
+  subtitle = 'Join thousands of American homes and businesses powering their future with the sun. Get your free, custom savings estimate today — no obligation.',
+  class: className = '',
+} = Astro.props;
+---
+<section class={`section ${className}`}>
+  <div class="container-xl">
+    <div class="relative overflow-hidden rounded-[2rem] bg-energy-950 px-6 py-16 text-center sm:px-12 sm:py-20">
+      <!-- Decorative gradient orbs -->
+      <div class="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full bg-solar-500/20 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-24 -right-16 size-80 rounded-full bg-energy-500/20 blur-3xl"></div>
+
+      <div class="relative z-10 mx-auto max-w-2xl" data-reveal>
+        <p class="eyebrow !bg-white/10 !text-solar-200 !ring-white/10">Free Solar Estimate</p>
+        <h2 class="mt-4 font-display text-3xl font-bold text-white text-balance sm:text-4xl">{title}</h2>
+        <p class="mt-4 text-lg text-energy-100 text-pretty">{subtitle}</p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a href="/quote" class="btn-primary px-8 py-3.5 text-base">Get My Free Quote <Icon name="arrow-right" class="size-4" /></a>
+          <a href={company.phoneHref} class="btn bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/20 px-8 py-3.5 text-base">
+            <Icon name="phone" class="size-4" /> {company.phone}
+          </a>
+        </div>
+        <p class="mt-5 text-sm text-energy-200">No pressure. No spam. Cancel anytime.</p>
+      </div>
+    </div>
+  </div>
+</section>

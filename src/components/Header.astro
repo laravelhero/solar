@@ -1,0 +1,104 @@
+---
+// Sticky luxury header: top bar + main nav with Services mega-menu, glass blur
+// on scroll, and a slide-in mobile menu.
+import { company } from '../data/company';
+import { socials } from '../data/socials';
+import { mainNav } from '../data/navigation';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import MegaMenu from './MegaMenu.astro';
+import MobileMenu from './MobileMenu.astro';
+---
+<header class="sticky top-0 z-50">
+  <!-- Top bar -->
+  <div class="hidden bg-energy-950 text-energy-100 lg:block">
+    <div class="container-xl flex h-10 items-center justify-between text-xs">
+      <div class="flex items-center gap-6">
+        <a href={company.phoneHref} class="flex items-center gap-1.5 hover:text-white">
+          <Icon name="phone" class="size-3.5" /> {company.phone}
+        </a>
+        <a href={`mailto:${company.email}`} class="flex items-center gap-1.5 hover:text-white">
+          <Icon name="mail" class="size-3.5" /> {company.email}
+        </a>
+        <span class="flex items-center gap-1.5 text-energy-200">
+          <Icon name="clock" class="size-3.5" /> {company.hours}
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1.5 text-solar-300">
+          <Icon name="star" class="size-3.5" /> {company.ratings.value}★ · {company.ratings.count.toLocaleString()} reviews
+        </span>
+        <div class="flex items-center gap-2 border-l border-white/10 pl-4">
+          {socials.map((s) => (
+            <a href={s.href} aria-label={s.name} target="_blank" rel="noopener" class="text-energy-200 transition-colors hover:text-white">
+              <svg viewBox="0 0 24 24" class="size-4" fill="currentColor" aria-hidden="true"><path d={s.icon} /></svg>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main bar -->
+  <div
+    class="border-b border-transparent transition-all duration-300"
+    :class="$store.ui.scrolled ? 'bg-white/80 backdrop-blur-xl border-gray-900/5 shadow-sm' : 'bg-white lg:bg-white/95'"
+    x-data="{ open: false }"
+  >
+    <div class="container-xl flex h-18 items-center justify-between gap-4" style="height:4.5rem">
+      <Logo />
+
+      <!-- Desktop nav -->
+      <nav class="hidden items-center gap-1 lg:flex" aria-label="Primary">
+        {mainNav.map((link) =>
+          link.label === 'Services' ? (
+            <div
+              class="relative"
+              @mouseenter="open = true"
+              @mouseleave="open = false"
+            >
+              <a
+                href="/services"
+                class="flex items-center gap-1 rounded-full px-3.5 py-2 text-sm font-semibold text-gray-700 transition-colors hover:text-solar-600"
+                :class="open && 'text-solar-600'"
+                @click="open = !open"
+                @keydown.escape="open = false"
+                :aria-expanded="open"
+                aria-haspopup="true"
+              >
+                {link.label}
+                <Icon name="chevron-down" class="size-4 transition-transform" x-bind:class="open && 'rotate-180'" />
+              </a>
+            </div>
+          ) : (
+            <a href={link.href} class="rounded-full px-3.5 py-2 text-sm font-semibold text-gray-700 transition-colors hover:text-solar-600">
+              {link.label}
+            </a>
+          )
+        )}
+      </nav>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <a href={company.phoneHref} class="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-energy-700 hover:bg-energy-50 sm:flex lg:hidden xl:flex">
+          <Icon name="phone" class="size-4" />
+          <span class="hidden xl:inline">{company.phone}</span>
+        </a>
+        <a href="/quote" class="btn-primary hidden sm:inline-flex">Free Quote</a>
+        <button
+          type="button"
+          class="grid size-11 place-items-center rounded-full text-gray-700 hover:bg-gray-100 lg:hidden"
+          @click="$store.ui.toggleMobile()"
+          aria-label="Open menu"
+        >
+          <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
+        </button>
+      </div>
+
+      <!-- Mega menu panel (absolute, full-width) -->
+      <MegaMenu />
+    </div>
+  </div>
+
+  <MobileMenu />
+</header>

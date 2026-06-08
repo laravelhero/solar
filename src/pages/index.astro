@@ -1,0 +1,182 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Stats from '../components/Stats.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import ServicesGrid from '../components/ServicesGrid.astro';
+import Calculator from '../components/Calculator.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import TestimonialSlider from '../components/TestimonialSlider.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import BlogGrid from '../components/BlogGrid.astro';
+import LocationGrid from '../components/LocationGrid.astro';
+import TrustBadges from '../components/TrustBadges.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+
+import { stats } from '../data/stats';
+import { servicesByCategory } from '../data/services';
+import { featuredProjects } from '../data/projects';
+import { homeFaqs } from '../data/faqs';
+import { company } from '../data/company';
+import { getPublishedPosts } from '../lib/blog';
+import { faqSchema, localBusinessSchema, serviceSchema } from '../lib/schema';
+
+const posts = (await getPublishedPosts()).slice(0, 3);
+const residential = servicesByCategory('residential');
+const commercial = servicesByCategory('commercial');
+
+const whyUs = [
+  { icon: 'users', title: 'In-House Expert Crews', text: 'NABCEP-certified W-2 installers — never subcontractors — on every job.' },
+  { icon: 'shield', title: '25-Year Warranty', text: 'Production, product and workmanship, all backed by a leak-free guarantee.' },
+  { icon: 'dollar', title: '$0-Down Financing', text: 'Plans where your payment is often lower than the bill it replaces.' },
+  { icon: 'trending-up', title: 'Bankable Savings', text: 'Transparent, conservative modeling — most customers beat their estimate.' },
+  { icon: 'monitor', title: '24/7 Monitoring', text: 'We watch your production and fix issues before you ever notice.' },
+  { icon: 'award', title: 'Award-Winning Service', text: `${company.ratings.value}★ across ${company.ratings.count.toLocaleString()}+ verified reviews nationwide.` },
+];
+
+const schemas = [
+  localBusinessSchema(),
+  faqSchema(homeFaqs.map((f) => ({ question: f.question, answer: f.answer }))),
+  serviceSchema({ name: 'Solar Energy Installation', description: company.description, url: '/services' }),
+];
+---
+<Layout
+  title="Solar Installation, Battery Storage & EV Charging Across the USA"
+  metaTitle={`${company.name} — Premium Solar, Storage & EV Power for America`}
+  description="Apex Solar designs, installs & services premium residential, commercial and industrial solar, battery storage and EV charging across the USA. $0 down, 30% tax credit, 25-year warranty. Get a free quote."
+  keywords={['solar installation', 'solar company usa', 'residential solar', 'commercial solar', 'solar battery storage', 'ev charging']}
+  canonical="/"
+  schemas={schemas}
+>
+  <Hero />
+
+  <!-- Trust / stats -->
+  <section class="section pt-12 sm:pt-16">
+    <div class="container-xl">
+      <TrustBadges class="pb-12" />
+      <Stats stats={stats} />
+    </div>
+  </section>
+
+  <!-- Residential services -->
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <SectionTitle
+        eyebrow="Residential Solar"
+        title="Everything your home needs to <span class='gradient-text'>run on sunshine</span>"
+        subtitle="From rooftop panels to whole-home battery backup and EV charging — one expert team for your entire energy journey."
+      />
+      <div class="mt-14">
+        <ServicesGrid services={residential} columns={3} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Savings Calculator" title="See your savings in 60 seconds" subtitle="Adjust your bill below for an instant, no-obligation estimate of your system size, cost and 25-year savings." class="mb-14" />
+      <Calculator />
+    </div>
+  </section>
+
+  <!-- Commercial -->
+  <section class="section bg-energy-950">
+    <div class="container-xl">
+      <div class="grid items-center gap-12 lg:grid-cols-2">
+        <div data-reveal>
+          <p class="eyebrow !bg-white/10 !text-solar-200 !ring-white/10">Commercial &amp; Industrial</p>
+          <h2 class="mt-4 font-display text-3xl font-bold text-white text-balance sm:text-4xl">Turn your roof into a <span class="gradient-text">profit center</span></h2>
+          <p class="mt-4 text-lg text-energy-100">Bankable commercial solar with detailed ROI modeling, MACRS depreciation and demand-charge control — typical payback in 4–7 years.</p>
+          <ul class="mt-8 space-y-3">
+            {['Detailed, bankable ROI pro-formas', 'Stack 30% ITC with accelerated depreciation', 'Pair with storage to crush demand charges', 'Turnkey delivery — on time, on budget'].map((b) => (
+              <li class="flex items-start gap-3 text-energy-100"><Icon name="check-circle" class="mt-0.5 size-5 shrink-0 text-grid-400" /> {b}</li>
+            ))}
+          </ul>
+          <a href="/services/commercial-solar" class="btn-primary mt-8">Explore commercial solar <Icon name="arrow-right" class="size-4" /></a>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2" data-reveal style="animation-delay:150ms">
+          {commercial.slice(0, 4).map((s) => (
+            <a href={`/services/${s.slug}`} class="group rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 transition-colors hover:bg-white/10">
+              <Icon name={s.icon} class="size-7 text-solar-300" />
+              <h3 class="mt-4 font-display font-bold text-white">{s.menuTitle}</h3>
+              <p class="mt-1.5 text-sm text-energy-200">{s.tagline}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why choose us -->
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Why Apex Solar" title="The premium standard in American solar" subtitle="We obsess over the details most installers cut corners on — so your system performs beautifully for decades." />
+      <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {whyUs.map((w, i) => (
+          <div class="card p-7" data-reveal style={`animation-delay:${i * 60}ms`}>
+            <span class="grid size-12 place-items-center rounded-2xl bg-energy-50 text-energy-700"><Icon name={w.icon} class="size-6" /></span>
+            <h3 class="mt-5 font-display text-lg font-bold text-gray-900">{w.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-500">{w.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <div class="flex flex-col items-center justify-between gap-6 sm:flex-row sm:text-left">
+        <SectionTitle align="left" eyebrow="Featured Projects" title="Proven results across America" subtitle="Real systems, real savings — explore a few of our recent installations." class="!max-w-xl" />
+        <a href="/projects" class="btn-ghost shrink-0">View all projects <Icon name="arrow-right" class="size-4" /></a>
+      </div>
+      <div class="mt-14">
+        <ProjectGrid projects={featuredProjects.slice(0, 3)} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Customer Stories" title="Loved by homeowners &amp; businesses alike" class="mb-14" />
+      <TestimonialSlider />
+    </div>
+  </section>
+
+  <!-- Service areas -->
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Service Areas" title="Premium solar, coast to coast" subtitle="Local crews and local expertise across eight states — with more on the way." />
+      <div class="mt-14">
+        <LocationGrid />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="FAQ" title="Solar questions, answered" subtitle="Everything you need to know before going solar. Still curious? We're a call away." class="mb-12" />
+      <FAQAccordion faqs={homeFaqs} />
+      <p class="mt-10 text-center text-gray-500">Have a different question? <a href="/faq" class="font-semibold text-solar-600 hover:text-solar-700">See all FAQs →</a></p>
+    </div>
+  </section>
+
+  <!-- Blog -->
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+        <SectionTitle align="left" eyebrow="Solar Insights" title="From the Apex Solar blog" class="!max-w-xl" />
+        <a href="/blog" class="btn-ghost shrink-0">Read the blog <Icon name="arrow-right" class="size-4" /></a>
+      </div>
+      <div class="mt-14">
+        <BlogGrid posts={posts} />
+      </div>
+    </div>
+  </section>
+
+  <CTA />
+</Layout>

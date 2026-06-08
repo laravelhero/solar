@@ -1,0 +1,51 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import ServicesGrid from '../../components/ServicesGrid.astro';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import { serviceCategories, servicesByCategory, type ServiceCategory } from '../../data/services';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Services', href: '/services' }];
+const order: ServiceCategory[] = ['residential', 'commercial', 'storage', 'specialty', 'support'];
+---
+<Layout
+  title="Solar Services — Residential, Commercial, Storage & EV"
+  description="Explore Apex Solar's full range of services: residential & commercial solar, battery storage, EV charging, solar roofing, agricultural solar, repairs, cleaning and monitoring."
+  keywords={['solar services', 'solar installation services', 'commercial solar', 'battery storage', 'solar maintenance']}
+  canonical="/services"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Our Services"
+    title="Complete solar energy solutions, end to end"
+    subtitle="From your first panel to lifetime maintenance — residential, commercial, storage, EV and specialty solar, all under one expert roof."
+    image="/images/services/services-hero.jpg"
+    imageAlt="Solar technicians reviewing plans on a rooftop installation"
+    crumbs={crumbs}
+  />
+
+  {order.map((cat, i) => {
+    const meta = serviceCategories[cat];
+    const list = servicesByCategory(cat);
+    return (
+      <section class={`section ${i % 2 === 1 ? 'bg-gray-50' : ''}`}>
+        <div class="container-xl">
+          <div class="flex items-center gap-4">
+            <span class="grid size-12 place-items-center rounded-2xl bg-solar-50 text-solar-600 ring-1 ring-solar-100"><Icon name={meta.icon} class="size-6" /></span>
+            <div>
+              <h2 class="font-display text-2xl font-bold text-gray-900">{meta.label}</h2>
+              <p class="text-gray-500">{meta.description}</p>
+            </div>
+          </div>
+          <div class="mt-10">
+            <ServicesGrid services={list} columns={3} />
+          </div>
+        </div>
+      </section>
+    );
+  })}
+
+  <CTA />
+</Layout>

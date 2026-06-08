@@ -1,0 +1,85 @@
+---
+import '../styles/global.css';
+import SEO, { type Props as SEOProps } from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyCTA from '../components/StickyCTA.astro';
+
+interface Props extends SEOProps {
+  /** hide the global header/footer (e.g. for the 404 page) */
+  bare?: boolean;
+}
+const { bare = false, ...seo } = Astro.props;
+---
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="theme-color" content="#f97316" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Fonts (preconnect + display swap for fast CWV) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+    />
+
+    <SEO {...seo} />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-energy-700 focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
+
+    {!bare && <Header />}
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    {!bare && <Footer />}
+    {!bare && <StickyCTA />}
+
+    <style is:global>
+      [x-cloak] { display: none !important; }
+      /* Branded placeholder shown until real photography is dropped in. */
+      img.img-fallback {
+        background: linear-gradient(135deg, var(--color-energy-900), var(--color-energy-950) 55%, var(--color-solar-700));
+        position: relative;
+      }
+      img.img-fallback::after {
+        content: attr(alt);
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1.3;
+        color: rgb(255 255 255 / 0.55);
+      }
+    </style>
+
+    <!-- Image fallback: until real photos are added under /public/images, show a
+         branded gradient with the alt text instead of a broken-image icon. -->
+    <script is:inline>
+      document.addEventListener(
+        'error',
+        (e) => {
+          const el = e.target;
+          if (el && el.tagName === 'IMG' && !el.classList.contains('img-fallback')) {
+            el.classList.add('img-fallback');
+            el.removeAttribute('src');
+          }
+        },
+        true,
+      );
+    </script>
+  </body>
+</html>

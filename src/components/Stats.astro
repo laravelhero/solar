@@ -1,0 +1,14 @@
+---
+import type { Stat } from '../data/stats';
+interface Props { stats: Stat[]; light?: boolean }
+const { stats, light = false } = Astro.props;
+---
+<dl class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-gray-900/5 lg:grid-cols-4">
+  {stats.map((s) => (
+    <div class={`flex flex-col items-center px-4 py-8 text-center ${light ? 'bg-energy-900' : 'bg-white'}`}>
+      <dt class={`font-display text-3xl font-extrabold sm:text-4xl ${light ? 'text-white' : 'gradient-text'}`}>{s.value}</dt>
+      <dd class={`mt-2 text-sm font-semibold ${light ? 'text-energy-100' : 'text-gray-700'}`}>{s.label}</dd>
+      {s.sublabel && <dd class={`mt-0.5 text-xs ${light ? 'text-energy-300' : 'text-gray-400'}`}>{s.sublabel}</dd>}
+    </div>
+  ))}
+</dl>

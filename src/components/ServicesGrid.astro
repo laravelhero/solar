@@ -1,0 +1,28 @@
+---
+import type { Service } from '../data/services';
+import Icon from './Icon.astro';
+interface Props { services: Service[]; columns?: 2 | 3 | 4 }
+const { services, columns = 3 } = Astro.props;
+const cols = { 2: 'sm:grid-cols-2', 3: 'sm:grid-cols-2 lg:grid-cols-3', 4: 'sm:grid-cols-2 lg:grid-cols-4' }[columns];
+---
+<div class={`grid grid-cols-1 gap-6 ${cols}`}>
+  {services.map((s, i) => (
+    <a
+      href={`/services/${s.slug}`}
+      class="group card relative flex flex-col overflow-hidden p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+      data-reveal
+      style={`animation-delay:${i * 60}ms`}
+    >
+      <div class="absolute right-0 top-0 size-28 translate-x-8 -translate-y-8 rounded-full bg-solar-50 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100"></div>
+      <span class="relative grid size-12 place-items-center rounded-2xl bg-solar-50 text-solar-600 ring-1 ring-solar-100 transition-colors duration-300 group-hover:bg-solar-500 group-hover:text-white">
+        <Icon name={s.icon} class="size-6" />
+      </span>
+      <h3 class="relative mt-5 font-display text-lg font-bold text-gray-900">{s.title}</h3>
+      <p class="relative mt-2 flex-1 text-sm leading-relaxed text-gray-500">{s.excerpt}</p>
+      <span class="relative mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-solar-600">
+        Learn more
+        <Icon name="arrow-right" class="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+      </span>
+    </a>
+  ))}
+</div>

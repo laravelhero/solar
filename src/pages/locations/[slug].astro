@@ -1,0 +1,115 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import FAQAccordion from '../../components/FAQAccordion.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import TestimonialSlider from '../../components/TestimonialSlider.astro';
+import ServicesGrid from '../../components/ServicesGrid.astro';
+import Icon from '../../components/Icon.astro';
+import { locations } from '../../data/locations';
+import { getFaqs } from '../../data/faqs';
+import { featuredServices } from '../../data/services';
+import { localBusinessSchema, faqSchema } from '../../lib/schema';
+
+export function getStaticPaths() {
+  return locations.map((loc) => ({ params: { slug: loc.slug }, props: { loc } }));
+}
+const { loc } = Astro.props;
+const faqs = getFaqs(loc.faqIds);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Locations', href: '/locations' },
+  { name: loc.state, href: `/locations/${loc.slug}` },
+];
+const schemas = [
+  localBusinessSchema({ name: `Apex Solar — ${loc.state}`, areaServed: loc.state, geo: loc.geo }),
+  ...(faqs.length ? [faqSchema(faqs.map((f) => ({ question: f.question, answer: f.answer })))] : []),
+];
+---
+<Layout
+  title={loc.seo.metaTitle}
+  description={loc.seo.metaDescription}
+  keywords={loc.seo.keywords}
+  canonical={`/locations/${loc.slug}`}
+  image={loc.image}
+  breadcrumbs={crumbs}
+  schemas={schemas}
+>
+  <PageHero eyebrow={`Solar in ${loc.state}`} title={loc.headline} subtitle={loc.intro} image={loc.image} imageAlt={loc.imageAlt} crumbs={crumbs} />
+
+  <!-- Local stats -->
+  <section class="border-b border-gray-100">
+    <div class="container-xl grid grid-cols-2 gap-px py-2 sm:grid-cols-4">
+      {[
+        { label: 'Avg. monthly bill', value: loc.avgBill, icon: 'dollar' },
+        { label: 'Avg. 25-yr savings', value: loc.avgSavings, icon: 'trending-up' },
+        { label: 'Solar resource', value: loc.sunHours.split(' peak')[0], icon: 'sun' },
+        { label: 'Cities served', value: `${loc.cities.length}+`, icon: 'map-pin' },
+      ].map((m) => (
+        <div class="flex flex-col items-center gap-1 px-3 py-6 text-center">
+          <Icon name={m.icon} class="size-6 text-solar-500" />
+          <p class="font-display text-lg font-extrabold text-gray-900">{m.value}</p>
+          <p class="text-xs font-medium text-gray-400">{m.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-xl grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <h2 class="font-display text-3xl font-bold text-gray-900">Why {loc.state} homeowners choose solar</h2>
+        <div class="mt-6 space-y-4">
+          {loc.localContent.map((p) => (
+            <p class="flex items-start gap-3 text-gray-600"><Icon name="check-circle" class="mt-1 size-5 shrink-0 text-grid-500" /> <span>{p}</span></p>
+          ))}
+        </div>
+
+        <h3 class="mt-10 font-display text-xl font-bold text-gray-900">{loc.state} solar incentives</h3>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          {loc.incentives.map((inc) => (
+            <div class="flex items-center gap-3 rounded-xl bg-solar-50 px-4 py-3 ring-1 ring-solar-100">
+              <Icon name="award" class="size-5 shrink-0 text-solar-600" />
+              <span class="text-sm font-semibold text-solar-900">{inc}</span>
+            </div>
+          ))}
+        </div>
+
+        <h3 class="mt-10 font-display text-xl font-bold text-gray-900">Cities we serve in {loc.state}</h3>
+        <div class="mt-4 flex flex-wrap gap-2">
+          {loc.cities.map((c) => <span class="rounded-full bg-gray-100 px-3.5 py-1.5 text-sm font-medium text-gray-700">{c}</span>)}
+        </div>
+      </div>
+
+      <aside class="lg:col-span-5">
+        <div class="lg:sticky lg:top-28">
+          <ContactForm variant="quote" title={`Free ${loc.state} solar quote`} />
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Our Services" title={`Solar services across ${loc.state}`} class="mb-12" />
+      <ServicesGrid services={featuredServices} columns={3} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Customer Stories" title={`Trusted across ${loc.state}`} class="mb-12" />
+      <TestimonialSlider />
+    </div>
+  </section>
+
+  {faqs.length > 0 && (
+    <section class="section bg-gray-50">
+      <div class="container-xl">
+        <SectionTitle eyebrow="FAQ" title={`${loc.state} solar questions`} class="mb-12" />
+        <FAQAccordion faqs={faqs} />
+      </div>
+    </section>
+  )}
+</Layout>

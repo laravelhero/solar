@@ -1,0 +1,104 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import ServicesGrid from '../../components/ServicesGrid.astro';
+import FAQAccordion from '../../components/FAQAccordion.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import Icon from '../../components/Icon.astro';
+import { services, serviceCategories, servicesByCategory } from '../../data/services';
+import { getFaqs } from '../../data/faqs';
+import { company } from '../../data/company';
+import { serviceSchema, faqSchema } from '../../lib/schema';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+const { service } = Astro.props;
+const faqs = getFaqs(service.faqIds);
+const related = servicesByCategory(service.category).filter((s) => s.slug !== service.slug).slice(0, 3);
+const catLabel = serviceCategories[service.category].label;
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Services', href: '/services' },
+  { name: service.menuTitle, href: `/services/${service.slug}` },
+];
+const schemas = [
+  serviceSchema({ name: service.title, description: service.seo.metaDescription, url: `/services/${service.slug}` }),
+  ...(faqs.length ? [faqSchema(faqs.map((f) => ({ question: f.question, answer: f.answer })))] : []),
+];
+---
+<Layout
+  title={service.seo.metaTitle}
+  description={service.seo.metaDescription}
+  keywords={service.seo.keywords}
+  canonical={`/services/${service.slug}`}
+  image={service.heroImage}
+  breadcrumbs={crumbs}
+  schemas={schemas}
+>
+  <PageHero eyebrow={catLabel} title={service.title} subtitle={service.intro} image={service.heroImage} imageAlt={service.heroAlt} crumbs={crumbs} />
+
+  <!-- Overview + benefits -->
+  <section class="section">
+    <div class="container-xl grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <p class="eyebrow">{service.tagline}</p>
+        <h2 class="mt-4 font-display text-3xl font-bold text-gray-900">Why choose Apex for {service.menuTitle.toLowerCase()}</h2>
+        <p class="mt-4 text-lg leading-relaxed text-gray-500">{service.excerpt}</p>
+
+        <div class="mt-10 grid gap-6 sm:grid-cols-2">
+          {service.features.map((f) => (
+            <div class="flex gap-4">
+              <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-solar-50 text-solar-600 ring-1 ring-solar-100"><Icon name={f.icon} class="size-5" /></span>
+              <div>
+                <h3 class="font-display font-bold text-gray-900">{f.title}</h3>
+                <p class="mt-1 text-sm text-gray-500">{f.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-10 rounded-2xl bg-grid-50 p-6 ring-1 ring-grid-100">
+          <h3 class="font-display text-lg font-bold text-grid-900">Key benefits</h3>
+          <ul class="mt-4 grid gap-2.5 sm:grid-cols-2">
+            {service.benefits.map((b) => (
+              <li class="flex items-start gap-2.5 text-sm font-medium text-grid-800"><Icon name="check-circle" class="mt-0.5 size-5 shrink-0 text-grid-600" /> {b}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Sticky lead form -->
+      <aside class="lg:col-span-5">
+        <div class="lg:sticky lg:top-28">
+          <ContactForm variant="quote" title={`Get a ${service.menuTitle} quote`} />
+          <div class="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
+            <Icon name="phone" class="size-4 text-solar-500" /> Prefer to talk? <a href={company.phoneHref} class="font-semibold text-solar-600">{company.phone}</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- FAQs -->
+  {faqs.length > 0 && (
+    <section class="section bg-gray-50">
+      <div class="container-xl">
+        <SectionTitle eyebrow="FAQ" title={`${service.menuTitle} questions`} class="mb-12" />
+        <FAQAccordion faqs={faqs} />
+      </div>
+    </section>
+  )}
+
+  <!-- Related -->
+  {related.length > 0 && (
+    <section class="section">
+      <div class="container-xl">
+        <SectionTitle eyebrow="Explore more" title={`More ${catLabel.toLowerCase()} services`} class="mb-12" />
+        <ServicesGrid services={related} columns={3} />
+      </div>
+    </section>
+  )}
+</Layout>

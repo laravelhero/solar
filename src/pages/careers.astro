@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Icon from '../components/Icon.astro';
+import { company } from '../data/company';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Careers', href: '/careers' }];
+const perks = [
+  { icon: 'trending-up', title: 'Growth & Training', text: 'Paid NABCEP certification and a clear path to advancement.' },
+  { icon: 'shield', title: 'Full Benefits', text: 'Medical, dental, vision, 401(k) match and paid time off.' },
+  { icon: 'users', title: 'Real Team', text: 'W-2 crews, not gig labor — we invest in our people.' },
+  { icon: 'leaf', title: 'Meaningful Work', text: 'Build the clean-energy future, one rooftop at a time.' },
+];
+const openings = [
+  { role: 'Solar Installer', type: 'Full-time', location: 'Austin, TX', dept: 'Field Operations' },
+  { role: 'Lead Electrician', type: 'Full-time', location: 'Phoenix, AZ', dept: 'Field Operations' },
+  { role: 'Solar Design Engineer', type: 'Full-time', location: 'Remote', dept: 'Engineering' },
+  { role: 'Energy Consultant', type: 'Full-time', location: 'Charlotte, NC', dept: 'Sales' },
+  { role: 'Project Manager — Commercial', type: 'Full-time', location: 'Dallas, TX', dept: 'Commercial' },
+  { role: 'Service Technician', type: 'Full-time', location: 'Tampa, FL', dept: 'Service' },
+];
+---
+<Layout
+  title="Careers — Join the Apex Solar Team"
+  description="Build your career in clean energy with Apex Solar. Explore open roles in installation, engineering, sales and service — with paid training and full benefits."
+  keywords={['solar jobs', 'solar careers', 'solar installer jobs', 'clean energy careers']}
+  canonical="/careers"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Careers"
+    title="Build your future in clean energy"
+    subtitle={`Join a team of ${company.ratings.count > 0 ? '500+' : ''} professionals powering America's transition to solar. We're hiring across the country.`}
+    image="/images/team/careers-hero.jpg"
+    imageAlt="Apex Solar team members collaborating on a project"
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Why Apex" title="A career, not just a job" />
+      <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {perks.map((p) => (
+          <div class="card p-7">
+            <span class="grid size-12 place-items-center rounded-2xl bg-solar-50 text-solar-600 ring-1 ring-solar-100"><Icon name={p.icon} class="size-6" /></span>
+            <h3 class="mt-5 font-display text-lg font-bold text-gray-900">{p.title}</h3>
+            <p class="mt-2 text-sm text-gray-500">{p.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Open Roles" title="Current openings" class="mb-12" />
+      <div class="mx-auto max-w-3xl space-y-4">
+        {openings.map((o) => (
+          <div class="card flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 class="font-display text-lg font-bold text-gray-900">{o.role}</h3>
+              <p class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
+                <span class="flex items-center gap-1"><Icon name="map-pin" class="size-4 text-solar-500" /> {o.location}</span>
+                <span class="flex items-center gap-1"><Icon name="clock" class="size-4 text-solar-500" /> {o.type}</span>
+                <span class="rounded-full bg-energy-50 px-2.5 py-0.5 text-xs font-semibold text-energy-700">{o.dept}</span>
+              </p>
+            </div>
+            <a href="#apply" class="btn-ghost shrink-0">Apply <Icon name="arrow-right" class="size-4" /></a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="apply" class="section">
+    <div class="container-xl grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div>
+        <SectionTitle align="left" eyebrow="Apply Now" title="Don't see your role? Reach out anyway." subtitle="We're always looking for great people. Send us your details and we'll be in touch when something fits." />
+      </div>
+      <ContactForm variant="contact" title="Apply to Apex Solar" />
+    </div>
+  </section>
+</Layout>

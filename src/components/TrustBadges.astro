@@ -1,0 +1,13 @@
+---
+import { company } from '../data/company';
+import Icon from './Icon.astro';
+interface Props { class?: string }
+const { class: className = '' } = Astro.props;
+---
+<div class={`flex flex-wrap items-center justify-center gap-x-8 gap-y-3 ${className}`}>
+  {company.certifications.map((cert) => (
+    <span class="flex items-center gap-2 text-sm font-semibold text-gray-500">
+      <Icon name="check-circle" class="size-4 text-grid-500" /> {cert}
+    </span>
+  ))}
+</div>

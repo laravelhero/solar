@@ -1,0 +1,31 @@
+---
+// Reusable inner-page hero with breadcrumb.
+import Breadcrumb from './Breadcrumb.astro';
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  image?: string;
+  imageAlt?: string;
+  crumbs?: { name: string; href: string }[];
+}
+const { eyebrow, title, subtitle, image, imageAlt = '', crumbs } = Astro.props;
+---
+<section class="relative overflow-hidden bg-energy-950">
+  {image && (
+    <div class="absolute inset-0">
+      <img src={image} alt={imageAlt} width="1920" height="800" fetchpriority="high" decoding="async" class="size-full object-cover opacity-30" />
+      <div class="absolute inset-0 bg-gradient-to-r from-energy-950 via-energy-950/90 to-energy-950/60"></div>
+    </div>
+  )}
+  <div class="pointer-events-none absolute -right-24 top-0 size-80 rounded-full bg-solar-500/20 blur-3xl"></div>
+
+  <div class="container-xl relative py-14 sm:py-20">
+    {crumbs && <Breadcrumb crumbs={crumbs} light />}
+    <div class="mt-5 max-w-3xl" data-reveal>
+      {eyebrow && <p class="eyebrow !bg-white/10 !text-solar-200 !ring-white/10">{eyebrow}</p>}
+      <h1 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-white text-balance sm:text-4xl lg:text-5xl">{title}</h1>
+      {subtitle && <p class="mt-4 max-w-2xl text-lg leading-relaxed text-energy-100 text-pretty">{subtitle}</p>}
+    </div>
+  </div>
+</section>

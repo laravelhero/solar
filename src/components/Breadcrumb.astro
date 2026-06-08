@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  crumbs: { name: string; href: string }[];
+  light?: boolean;
+}
+const { crumbs, light = false } = Astro.props;
+const base = light ? 'text-energy-200' : 'text-gray-400';
+const active = light ? 'text-white' : 'text-gray-700';
+---
+<nav aria-label="Breadcrumb" class={`text-sm ${base}`}>
+  <ol class="flex flex-wrap items-center gap-1.5">
+    {crumbs.map((c, i) => (
+      <li class="flex items-center gap-1.5">
+        {i > 0 && <Icon name="arrow-right" class="size-3 opacity-50" />}
+        {i < crumbs.length - 1 ? (
+          <a href={c.href} class="transition-colors hover:text-solar-500">{c.name}</a>
+        ) : (
+          <span class={`font-semibold ${active}`} aria-current="page">{c.name}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

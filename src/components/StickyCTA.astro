@@ -1,0 +1,13 @@
+---
+// Mobile sticky conversion bar: click-to-call + free quote. Hidden on desktop.
+import { company } from '../data/company';
+import Icon from './Icon.astro';
+---
+<div class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-px border-t border-gray-200 bg-white/90 p-2 backdrop-blur-lg sm:hidden" style="padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem)">
+  <a href={company.phoneHref} class="flex items-center justify-center gap-2 rounded-xl bg-energy-700 px-4 py-3 text-sm font-semibold text-white">
+    <Icon name="phone" class="size-4" /> Call Now
+  </a>
+  <a href="/quote" class="flex items-center justify-center gap-2 rounded-xl bg-solar-500 px-4 py-3 text-sm font-semibold text-white">
+    <Icon name="bolt" class="size-4" /> Free Quote
+  </a>
+</div>

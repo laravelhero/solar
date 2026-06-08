@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import TrustBadges from '../components/TrustBadges.astro';
+import Icon from '../components/Icon.astro';
+import { company } from '../data/company';
+import { impactStats } from '../data/stats';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Get Free Quote', href: '/quote' }];
+const steps = [
+  { icon: 'phone', title: 'Tell us about your home', text: 'Share a few details — it takes about 60 seconds.' },
+  { icon: 'grid', title: 'Get a custom design', text: 'We model your roof, shading and utility rate for a precise plan.' },
+  { icon: 'dollar', title: 'See your savings', text: 'Review a transparent quote with financing options — no pressure.' },
+];
+---
+<Layout
+  title="Get a Free Solar Quote"
+  description="Get your free, no-obligation solar quote from Apex Solar. See your custom system design, cost, incentives and 25-year savings. Most quotes ready within one business hour."
+  keywords={['free solar quote', 'solar estimate', 'solar quote usa']}
+  canonical="/quote"
+  breadcrumbs={crumbs}
+>
+  <section class="relative overflow-hidden bg-energy-950 py-16 sm:py-20">
+    <div class="pointer-events-none absolute -left-24 top-0 size-96 rounded-full bg-solar-500/20 blur-3xl"></div>
+    <div class="container-xl relative grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div data-reveal>
+        <p class="eyebrow !bg-white/10 !text-solar-200 !ring-white/10">Free · No Obligation</p>
+        <h1 class="mt-4 font-display text-4xl font-extrabold text-white text-balance sm:text-5xl">See your solar savings in <span class="gradient-text">60 seconds</span></h1>
+        <p class="mt-4 max-w-lg text-lg text-energy-100">Join {company.ratings.count.toLocaleString()}+ homes and businesses powering their future with the sun. Get a custom design and savings forecast — completely free.</p>
+
+        <ul class="mt-8 space-y-4">
+          {steps.map((s, i) => (
+            <li class="flex items-start gap-4">
+              <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-white/10 text-solar-300 ring-1 ring-white/10"><Icon name={s.icon} class="size-5" /></span>
+              <div>
+                <p class="font-display font-bold text-white"><span class="text-solar-400">{i + 1}.</span> {s.title}</p>
+                <p class="text-sm text-energy-200">{s.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <dl class="mt-10 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 sm:grid-cols-4">
+          {impactStats.map((s) => (
+            <div><dt class="font-display text-xl font-extrabold text-white">{s.value}</dt><dd class="text-xs text-energy-300">{s.label}</dd></div>
+          ))}
+        </dl>
+      </div>
+
+      <div data-reveal style="animation-delay:150ms">
+        <ContactForm variant="quote" />
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12">
+    <div class="container-xl">
+      <TrustBadges />
+    </div>
+  </section>
+</Layout>

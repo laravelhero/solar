@@ -1,0 +1,89 @@
+---
+// Interactive solar savings calculator (Alpine, client-side, no network).
+// Estimates system size, cost, incentive and lifetime savings from the user's bill.
+import Icon from './Icon.astro';
+---
+<div
+  id="calculator"
+  class="card overflow-hidden lg:grid lg:grid-cols-2"
+  x-data="{
+    bill: 180,
+    state: 'TX',
+    rates: { TX: 0.14, CA: 0.31, FL: 0.15, AZ: 0.15, NV: 0.14, CO: 0.14, NC: 0.13, GA: 0.14 },
+    get monthlyKwh() { return Math.round(this.bill / this.rates[this.state]) },
+    get systemKw() { return Math.max(4, Math.round((this.monthlyKwh * 12 / 1400) * 10) / 10) },
+    get grossCost() { return Math.round(this.systemKw * 2900) },
+    get taxCredit() { return Math.round(this.grossCost * 0.30) },
+    get netCost() { return this.grossCost - this.taxCredit },
+    get yearOne() { return Math.round(this.bill * 12 * 0.92) },
+    get lifetime() {
+      let total = 0, annual = this.yearOne;
+      for (let y = 0; y < 25; y++) { total += annual; annual *= 1.035 }
+      return Math.round(total)
+    },
+    fmt(n) { return '$' + n.toLocaleString() }
+  }"
+>
+  <!-- Inputs -->
+  <div class="bg-gradient-to-br from-energy-900 to-energy-950 p-8 text-white sm:p-10">
+    <p class="eyebrow !bg-white/10 !text-solar-200 !ring-white/10">Savings Calculator</p>
+    <h3 class="mt-4 font-display text-2xl font-bold">Estimate your solar savings</h3>
+    <p class="mt-2 text-sm text-energy-100">Move the slider to your average monthly electric bill.</p>
+
+    <div class="mt-8">
+      <div class="flex items-end justify-between">
+        <label for="bill" class="text-sm font-semibold text-energy-100">Monthly electric bill</label>
+        <span class="font-display text-2xl font-bold text-solar-300" x-text="fmt(bill)"></span>
+      </div>
+      <input id="bill" type="range" min="60" max="600" step="10" x-model.number="bill"
+        class="mt-3 w-full accent-solar-500" />
+      <div class="mt-1 flex justify-between text-xs text-energy-300"><span>$60</span><span>$600</span></div>
+    </div>
+
+    <div class="mt-6">
+      <label for="state" class="text-sm font-semibold text-energy-100">Your state</label>
+      <select id="state" x-model="state" class="mt-2 w-full rounded-xl border-0 bg-white/10 px-4 py-3 text-white ring-1 ring-white/15 focus:ring-solar-400 [&>option]:text-gray-900">
+        <option value="TX">Texas</option>
+        <option value="CA">California</option>
+        <option value="FL">Florida</option>
+        <option value="AZ">Arizona</option>
+        <option value="NV">Nevada</option>
+        <option value="CO">Colorado</option>
+        <option value="NC">North Carolina</option>
+        <option value="GA">Georgia</option>
+      </select>
+    </div>
+
+    <div class="mt-8 grid grid-cols-2 gap-3 border-t border-white/10 pt-6 text-sm">
+      <div><p class="text-energy-300">Recommended system</p><p class="font-display text-lg font-bold" x-text="systemKw + ' kW'"></p></div>
+      <div><p class="text-energy-300">Est. monthly usage</p><p class="font-display text-lg font-bold" x-text="monthlyKwh.toLocaleString() + ' kWh'"></p></div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="flex flex-col justify-center p-8 sm:p-10">
+    <div class="space-y-5">
+      <div class="flex items-center justify-between">
+        <span class="flex items-center gap-2 text-gray-600"><Icon name="dollar" class="size-5 text-gray-400" /> System cost (gross)</span>
+        <span class="font-semibold text-gray-900" x-text="fmt(grossCost)"></span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="flex items-center gap-2 text-gray-600"><Icon name="award" class="size-5 text-grid-500" /> 30% federal tax credit</span>
+        <span class="font-semibold text-grid-600" x-text="'– ' + fmt(taxCredit)"></span>
+      </div>
+      <div class="flex items-center justify-between border-t border-dashed border-gray-200 pt-5">
+        <span class="font-semibold text-gray-900">Net investment</span>
+        <span class="font-display text-xl font-bold text-gray-900" x-text="fmt(netCost)"></span>
+      </div>
+
+      <div class="rounded-2xl bg-gradient-to-br from-solar-50 to-amber-50 p-6 ring-1 ring-solar-100">
+        <p class="flex items-center gap-2 text-sm font-semibold text-solar-700"><Icon name="trending-up" class="size-5" /> Estimated 25-year savings</p>
+        <p class="mt-1 font-display text-4xl font-extrabold gradient-text" x-text="fmt(lifetime)"></p>
+        <p class="mt-1 text-xs text-gray-500">Assumes ~3.5% annual utility-rate inflation.</p>
+      </div>
+
+      <a href="/quote" class="btn-primary w-full">Get my exact numbers <Icon name="arrow-right" class="size-4" /></a>
+      <p class="text-center text-xs text-gray-400">Estimates only. Your custom quote will be precise to your roof &amp; utility.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { company } from '../data/company';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Privacy Policy', href: '/privacy-policy' }];
+const updated = 'June 1, 2026';
+const sections = [
+  { h: 'Information We Collect', p: ['We collect information you provide directly — such as your name, email, phone number, address and details about your property — when you request a quote, contact us or subscribe to updates.', 'We also automatically collect limited technical data (IP address, browser type, pages visited) through cookies and analytics to improve our website.'] },
+  { h: 'How We Use Your Information', p: ['To prepare and deliver your solar quote and design.', 'To communicate with you about our services, your project and relevant offers.', 'To improve our website, services and customer experience.', 'To comply with legal obligations.'] },
+  { h: 'How We Share Information', p: ['We do not sell your personal information. We may share it with trusted service providers (financing partners, scheduling tools, CRM) solely to deliver our services, and as required by law.'] },
+  { h: 'Cookies & Analytics', p: ['Our site uses cookies and privacy-respecting analytics to understand usage and improve performance. You can disable cookies in your browser settings.'] },
+  { h: 'Your Rights', p: ['Depending on your state, you may have the right to access, correct or delete your personal information, and to opt out of marketing communications. Contact us to exercise these rights.'] },
+  { h: 'Data Security', p: ['We use industry-standard safeguards to protect your information. No method of transmission is 100% secure, but we work diligently to keep your data safe.'] },
+  { h: 'Contact Us', p: [`Questions about this policy? Email ${company.email} or call ${company.phone}.`] },
+];
+---
+<Layout title="Privacy Policy" description={`Privacy policy for ${company.name}. Learn how we collect, use and protect your personal information.`} canonical="/privacy-policy" robots="index, follow" breadcrumbs={crumbs}>
+  <PageHero eyebrow="Legal" title="Privacy Policy" subtitle={`Last updated: ${updated}`} crumbs={crumbs} />
+  <section class="section">
+    <div class="container-xl">
+      <div class="prose-solar mx-auto max-w-3xl">
+        <p>{company.legalName} (“we”, “us”) respects your privacy. This policy explains what we collect, how we use it, and your choices.</p>
+        {sections.map((s) => (
+          <>
+            <h2>{s.h}</h2>
+            {s.p.map((para) => <p>{para}</p>)}
+          </>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

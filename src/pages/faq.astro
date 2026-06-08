@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import CTA from '../components/CTA.astro';
+import { faqs } from '../data/faqs';
+import { faqSchema } from '../lib/schema';
+
+const topics = [
+  { key: 'general', label: 'General' },
+  { key: 'cost', label: 'Cost & Financing' },
+  { key: 'install', label: 'Installation' },
+  { key: 'storage', label: 'Battery & Storage' },
+  { key: 'incentives', label: 'Incentives' },
+  { key: 'service', label: 'Service & Maintenance' },
+] as const;
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'FAQ', href: '/faq' }];
+const schemas = [faqSchema(faqs.map((f) => ({ question: f.question, answer: f.answer })))];
+---
+<Layout
+  title="Frequently Asked Questions About Solar"
+  description="Answers to the most common questions about solar cost, financing, the federal tax credit, installation, battery storage and maintenance — from the Apex Solar team."
+  keywords={['solar faq', 'solar questions', 'solar cost questions', 'solar tax credit faq']}
+  canonical="/faq"
+  breadcrumbs={crumbs}
+  schemas={schemas}
+>
+  <PageHero eyebrow="FAQ" title="Your solar questions, answered" subtitle="Everything you need to know before going solar. Still curious? Our specialists are just a call away." crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container-xl">
+      {topics.map((topic) => {
+        const list = faqs.filter((f) => f.topic === topic.key);
+        if (!list.length) return null;
+        return (
+          <div class="mb-12">
+            <h2 class="mb-4 text-center font-display text-2xl font-bold text-gray-900">{topic.label}</h2>
+            <FAQAccordion faqs={list} />
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <CTA title="Still have questions?" subtitle="Our friendly solar specialists are happy to help — no pressure, no jargon, just straight answers." />
+</Layout>

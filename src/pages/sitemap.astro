@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { services } from '../data/services';
+import { locations } from '../data/locations';
+import { projects } from '../data/projects';
+import { blogCategories } from '../data/blogCategories';
+import { getPublishedPosts } from '../lib/blog';
+
+const posts = await getPublishedPosts();
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Sitemap', href: '/sitemap' }];
+
+const groups = [
+  { title: 'Main Pages', links: [
+    { label: 'Home', href: '/' }, { label: 'About Us', href: '/about' }, { label: 'Services', href: '/services' },
+    { label: 'Projects', href: '/projects' }, { label: 'Case Studies', href: '/case-studies' }, { label: 'Blog', href: '/blog' },
+    { label: 'Locations', href: '/locations' }, { label: 'FAQ', href: '/faq' }, { label: 'Testimonials', href: '/testimonials' },
+    { label: 'Careers', href: '/careers' }, { label: 'Contact', href: '/contact' }, { label: 'Get Free Quote', href: '/quote' },
+  ] },
+  { title: 'Resources', links: [
+    { label: 'Financing Options', href: '/financing' }, { label: 'Solar Incentives', href: '/incentives' }, { label: 'Solar Tax Credits', href: '/tax-credits' },
+    { label: 'Privacy Policy', href: '/privacy-policy' }, { label: 'Terms & Conditions', href: '/terms' },
+  ] },
+  { title: 'Services', links: services.map((s) => ({ label: s.menuTitle, href: `/services/${s.slug}` })) },
+  { title: 'Locations', links: locations.map((l) => ({ label: l.state, href: `/locations/${l.slug}` })) },
+  { title: 'Blog Categories', links: blogCategories.map((c) => ({ label: c.name, href: `/blog/category/${c.slug}` })) },
+  { title: 'Blog Articles', links: posts.map((p) => ({ label: p.data.title, href: `/blog/${p.id}` })) },
+  { title: 'Projects', links: projects.map((p) => ({ label: p.name, href: `/projects/${p.slug}` })) },
+];
+---
+<Layout title="Sitemap" description="Browse every page on the Apex Solar website — services, projects, locations, blog articles and resources." canonical="/sitemap" breadcrumbs={crumbs}>
+  <PageHero eyebrow="Sitemap" title="Find your way around" subtitle="Every page on the Apex Solar site, organized for easy browsing." crumbs={crumbs} />
+  <section class="section">
+    <div class="container-xl grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+      {groups.map((g) => (
+        <div>
+          <h2 class="flex items-center gap-2 font-display text-lg font-bold text-gray-900"><Icon name="grid" class="size-5 text-solar-500" /> {g.title}</h2>
+          <ul class="mt-4 space-y-2 border-l border-gray-100 pl-4">
+            {g.links.map((l) => (
+              <li><a href={l.href} class="text-sm text-gray-600 hover:text-solar-600">{l.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>

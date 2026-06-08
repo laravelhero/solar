@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import { locations } from '../data/locations';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Solar Incentives', href: '/incentives' }];
+const tiers = [
+  { icon: 'award', title: 'Federal Incentives', text: 'The 30% Residential Clean Energy Credit and commercial ITC + MACRS depreciation apply nationwide.', items: ['30% federal tax credit', 'MACRS depreciation (commercial)', 'USDA REAP grants (agricultural)'] },
+  { icon: 'map-pin', title: 'State Incentives', text: 'Many states add their own credits, rebates and tax exemptions on top of the federal credit.', items: ['State tax credits (e.g. AZ 25%)', 'Sales & property-tax exemptions', 'State storage rebates (e.g. SGIP)'] },
+  { icon: 'bolt', title: 'Utility Incentives', text: 'Local utilities often offer rebates, performance payments and favorable net-metering programs.', items: ['Utility cash rebates', 'Net metering / net billing', 'Performance-based incentives'] },
+];
+---
+<Layout
+  title="Solar Incentives, Rebates & Tax Exemptions by State"
+  description="A complete guide to solar incentives in the USA — federal tax credits, state rebates, utility programs and tax exemptions. See what's available in your state."
+  keywords={['solar incentives', 'solar rebates', 'state solar incentives', 'solar tax exemptions']}
+  canonical="/incentives"
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow="Incentives" title="Stack every solar incentive you qualify for" subtitle="Federal, state and utility programs can cut your effective solar cost dramatically. Here's how they layer together." crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Three Layers of Savings" title="How incentives stack" subtitle="The magic of solar economics is combining incentives — each one compounding the next." />
+      <div class="mt-14 grid gap-6 lg:grid-cols-3">
+        {tiers.map((t) => (
+          <div class="card p-7">
+            <span class="grid size-12 place-items-center rounded-2xl bg-solar-50 text-solar-600 ring-1 ring-solar-100"><Icon name={t.icon} class="size-6" /></span>
+            <h3 class="mt-5 font-display text-lg font-bold text-gray-900">{t.title}</h3>
+            <p class="mt-2 text-sm text-gray-500">{t.text}</p>
+            <ul class="mt-4 space-y-2 border-t border-gray-100 pt-4">
+              {t.items.map((i) => <li class="flex items-start gap-2 text-sm font-medium text-gray-700"><Icon name="check-circle" class="mt-0.5 size-4 shrink-0 text-grid-500" /> {i}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <SectionTitle eyebrow="By State" title="Incentives where you live" subtitle="Select your state to see the local programs that apply." />
+      <div class="mt-14 grid gap-6 sm:grid-cols-2">
+        {locations.map((l) => (
+          <a href={`/locations/${l.slug}`} class="group card p-7 transition-shadow hover:shadow-lg">
+            <div class="flex items-center justify-between">
+              <h3 class="flex items-center gap-2 font-display text-lg font-bold text-gray-900"><Icon name="map-pin" class="size-5 text-solar-500" /> {l.state}</h3>
+              <Icon name="arrow-right" class="size-4 text-solar-500 transition-transform group-hover:translate-x-1" />
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              {l.incentives.map((inc) => <span class="rounded-full bg-solar-50 px-3 py-1 text-xs font-semibold text-solar-700 ring-1 ring-solar-100">{inc}</span>)}
+            </div>
+          </a>
+        ))}
+      </div>
+      <p class="mt-8 text-center text-sm text-gray-400">Incentives change frequently and eligibility varies. Always confirm current programs with a tax professional and your utility.</p>
+    </div>
+  </section>
+
+  <CTA title="Find out exactly what you qualify for" subtitle="Our specialists map every federal, state and utility incentive available at your address — and bake them into your free quote." />
+</Layout>

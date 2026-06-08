@@ -1,0 +1,119 @@
+---
+import { render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import FAQAccordion from '../../components/FAQAccordion.astro';
+import BlogGrid from '../../components/BlogGrid.astro';
+import CTA from '../../components/CTA.astro';
+import Icon from '../../components/Icon.astro';
+import { getPublishedPosts, readingTime, formatDate, buildToc } from '../../lib/blog';
+import { getCategory } from '../../data/blogCategories';
+import { articleSchema, faqSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({ params: { id: post.id }, props: { post, posts } }));
+}
+const { post, posts } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const cat = getCategory(d.category);
+const toc = buildToc(post.body);
+const related = posts.filter((p) => p.data.category === d.category && p.id !== post.id).slice(0, 3);
+const fallbackRelated = related.length ? related : posts.filter((p) => p.id !== post.id).slice(0, 3);
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Blog', href: '/blog' },
+  { name: d.title, href: `/blog/${post.id}` },
+];
+const schemas = [
+  articleSchema({ title: d.title, description: d.metaDescription, url: `/blog/${post.id}`, image: d.featuredImage, author: d.author, published: d.publishDate, modified: d.modifiedDate }),
+  ...(d.faq.length ? [faqSchema(d.faq)] : []),
+];
+---
+<Layout
+  title={d.metaTitle ?? d.title}
+  metaTitle={d.title}
+  description={d.metaDescription}
+  keywords={d.keywords}
+  canonical={`/blog/${post.id}`}
+  image={d.featuredImage}
+  ogType="article"
+  breadcrumbs={crumbs}
+  schemas={schemas}
+>
+  <article>
+    <!-- Header -->
+    <header class="bg-energy-950 pb-28 pt-12">
+      <div class="container-xl">
+        <Breadcrumb crumbs={crumbs} light />
+        <div class="mx-auto mt-6 max-w-3xl text-center">
+          {cat && <a href={`/blog/category/${cat.slug}`} class="eyebrow !bg-white/10 !text-solar-200 !ring-white/10">{cat.name}</a>}
+          <h1 class="mt-4 font-display text-3xl font-extrabold text-white text-balance sm:text-4xl lg:text-5xl lg:leading-tight">{d.title}</h1>
+          <p class="mt-4 text-lg text-energy-100">{d.excerpt}</p>
+          <div class="mt-6 flex items-center justify-center gap-3 text-sm text-energy-200">
+            <span class="grid size-9 place-items-center rounded-full bg-solar-500 font-bold text-white">{d.author.charAt(0)}</span>
+            <span class="font-semibold text-white">{d.author}</span>
+            <span>·</span><span>{formatDate(d.publishDate)}</span>
+            <span>·</span><span class="flex items-center gap-1"><Icon name="clock" class="size-4" /> {readingTime(post.body)} min</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-xl -mt-20">
+      <div class="mx-auto max-w-3xl overflow-hidden rounded-3xl shadow-xl">
+        <img src={d.featuredImage} alt={d.featuredImageAlt} width="900" height="500" fetchpriority="high" decoding="async" class="aspect-[16/9] w-full object-cover" />
+      </div>
+    </div>
+
+    <!-- Body + TOC -->
+    <div class="container-xl py-14">
+      <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-12">
+        {toc.length > 2 && (
+          <aside class="hidden lg:col-span-3 lg:block">
+            <div class="sticky top-28">
+              <p class="text-xs font-bold uppercase tracking-wider text-gray-400">On this page</p>
+              <ul class="mt-3 space-y-2 border-l border-gray-100">
+                {toc.map((t) => (
+                  <li><a href={`#${t.slug}`} class={`block border-l-2 border-transparent py-1 text-sm text-gray-500 hover:border-solar-400 hover:text-solar-600 ${t.depth === 3 ? 'pl-6' : 'pl-3 font-medium'}`}>{t.text}</a></li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+        )}
+
+        <div class={toc.length > 2 ? 'lg:col-span-9' : 'lg:col-span-12 mx-auto max-w-3xl'}>
+          <div class="prose-solar">
+            <Content />
+          </div>
+
+          {d.tags.length > 0 && (
+            <div class="mt-10 flex flex-wrap gap-2 border-t border-gray-100 pt-8">
+              {d.tags.map((t) => <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">#{t}</span>)}
+            </div>
+          )}
+
+          {d.faq.length > 0 && (
+            <div class="mt-12">
+              <h2 class="font-display text-2xl font-bold text-gray-900">Frequently asked questions</h2>
+              <div class="mt-6">
+                <FAQAccordion faqs={d.faq.map((f, i) => ({ ...f, id: `faq-${i}`, topic: 'general' as const }))} />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <h2 class="mb-12 text-center font-display text-3xl font-bold text-gray-900">Keep reading</h2>
+      <BlogGrid posts={fallbackRelated} />
+    </div>
+  </section>
+
+  <CTA />
+</Layout>

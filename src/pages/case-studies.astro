@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import CTA from '../components/CTA.astro';
+import { caseStudies } from '../data/projects';
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Case Studies', href: '/case-studies' }];
+---
+<Layout
+  title="Solar Case Studies — Detailed Project Results"
+  description="In-depth solar case studies showing the challenge, solution and measurable results of Apex Solar installations across residential, commercial and industrial projects."
+  keywords={['solar case studies', 'solar project results', 'commercial solar case study']}
+  canonical="/case-studies"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Case Studies"
+    title="The numbers behind the panels"
+    subtitle="Deep dives into our most instructive projects — the challenges, the engineering and the bankable results."
+    image="/images/projects/case-studies-hero.jpg"
+    imageAlt="Engineer analyzing solar production data on site"
+    crumbs={crumbs}
+  />
+  <section class="section">
+    <div class="container-xl">
+      <ProjectGrid projects={caseStudies} />
+    </div>
+  </section>
+  <CTA />
+</Layout>

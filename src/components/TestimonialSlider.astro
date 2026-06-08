@@ -1,0 +1,51 @@
+---
+import { testimonials } from '../data/testimonials';
+import Icon from './Icon.astro';
+---
+<div
+  x-data="{ active: 0, count: 0, init() { this.count = this.$refs.track.children.length },
+            go(i){ this.active = (i + this.count) % this.count } }"
+  class="relative"
+  x-init="$nextTick(() => { setInterval(() => go(active + 1), 7000) })"
+>
+  <div class="overflow-hidden">
+    <div class="flex transition-transform duration-500 ease-out" x-ref="track" :style="`transform: translateX(-${active * 100}%)`">
+      {testimonials.map((t) => (
+        <figure class="w-full shrink-0 px-2">
+          <div class="card mx-auto max-w-3xl p-8 sm:p-10">
+            <div class="flex items-center gap-1 text-solar-400">
+              {Array.from({ length: t.rating }).map(() => <Icon name="star" class="size-5 fill-solar-400" />)}
+            </div>
+            <blockquote class="mt-5 font-display text-xl font-medium leading-relaxed text-gray-800 sm:text-2xl">
+              “{t.quote}”
+            </blockquote>
+            <figcaption class="mt-6 flex items-center gap-4">
+              <span class="grid size-12 place-items-center rounded-full bg-gradient-to-br from-solar-400 to-solar-600 font-bold text-white">
+                {t.name.charAt(0)}
+              </span>
+              <div>
+                <p class="font-bold text-gray-900">{t.name}</p>
+                <p class="text-sm text-gray-500">{t.role} · {t.location} · <span class="text-solar-600">{t.service}</span></p>
+              </div>
+            </figcaption>
+          </div>
+        </figure>
+      ))}
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="mt-6 flex items-center justify-center gap-3">
+    <button type="button" @click="go(active - 1)" class="grid size-10 place-items-center rounded-full bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:text-solar-600" aria-label="Previous testimonial">
+      <Icon name="arrow-right" class="size-4 rotate-180" />
+    </button>
+    <div class="flex items-center gap-2">
+      {testimonials.map((_, i) => (
+        <button type="button" @click={`go(${i})`} class="h-2 rounded-full bg-gray-300 transition-all" :class={`active === ${i} ? 'w-6 bg-solar-500' : 'w-2'`} aria-label={`Go to testimonial ${i + 1}`}></button>
+      ))}
+    </div>
+    <button type="button" @click="go(active + 1)" class="grid size-10 place-items-center rounded-full bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:text-solar-600" aria-label="Next testimonial">
+      <Icon name="arrow-right" class="size-4" />
+    </button>
+  </div>
+</div>

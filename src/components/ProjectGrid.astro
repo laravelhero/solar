@@ -1,0 +1,36 @@
+---
+import type { Project } from '../data/projects';
+import Icon from './Icon.astro';
+interface Props { projects: Project[]; columns?: 2 | 3 }
+const { projects, columns = 3 } = Astro.props;
+const cols = columns === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3';
+const typeColor: Record<string, string> = {
+  Residential: 'bg-solar-50 text-solar-700 ring-solar-100',
+  Commercial: 'bg-energy-50 text-energy-700 ring-energy-100',
+  Industrial: 'bg-gray-100 text-gray-700 ring-gray-200',
+  Agricultural: 'bg-grid-50 text-grid-700 ring-grid-100',
+};
+---
+<div class={`grid grid-cols-1 gap-6 ${cols}`}>
+  {projects.map((p, i) => (
+    <a href={`/projects/${p.slug}`} class="group card overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl" data-reveal style={`animation-delay:${i * 60}ms`}>
+      <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
+        <img src={p.image} alt={p.imageAlt} width="600" height="450" loading={i < 3 ? 'eager' : 'lazy'} decoding="async" class="size-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <span class={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${typeColor[p.type]}`}>{p.type}</span>
+        <span class="absolute bottom-3 left-3 flex items-center gap-1 text-xs font-semibold text-white">
+          <Icon name="map-pin" class="size-3.5" /> {p.location}, {p.state}
+        </span>
+        <span class="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-bold text-energy-700">{p.systemSize}</span>
+      </div>
+      <div class="p-6">
+        <h3 class="font-display text-lg font-bold text-gray-900 group-hover:text-solar-600">{p.name}</h3>
+        <p class="mt-2 line-clamp-2 text-sm text-gray-500">{p.summary}</p>
+        <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4 text-sm">
+          <span class="font-semibold text-grid-600">{p.savings.split(' over')[0]} saved</span>
+          <span class="inline-flex items-center gap-1 font-semibold text-solar-600">View project <Icon name="arrow-right" class="size-3.5 transition-transform group-hover:translate-x-1" /></span>
+        </div>
+      </div>
+    </a>
+  ))}
+</div>

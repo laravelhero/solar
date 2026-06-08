@@ -1,0 +1,84 @@
+---
+// Central SEO component. Renders the full <head> meta stack: title, description,
+// keywords, canonical, robots, Open Graph, Twitter cards, geo tags and JSON-LD.
+import { company } from '../data/company';
+import { organizationSchema, breadcrumbSchema } from '../lib/schema';
+
+export interface Props {
+  title: string;
+  description: string;
+  keywords?: string[];
+  /** path only, e.g. "/services/residential-solar" */
+  canonical?: string;
+  robots?: string;
+  image?: string;
+  ogType?: 'website' | 'article';
+  /** extra JSON-LD blocks to inject (service, faq, article, etc.) */
+  schemas?: Record<string, unknown>[];
+  breadcrumbs?: { name: string; href: string }[];
+  /** override OG/Twitter titles independently of the page <title> */
+  metaTitle?: string;
+}
+
+const {
+  title,
+  description,
+  keywords = [],
+  canonical,
+  robots = 'index, follow, max-image-preview:large',
+  image = company.ogImage,
+  ogType = 'website',
+  schemas = [],
+  breadcrumbs,
+  metaTitle,
+} = Astro.props;
+
+const siteName = company.name;
+const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+const socialTitle = metaTitle ?? fullTitle;
+
+const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site ?? company.url);
+const ogImage = new URL(image, Astro.site ?? company.url);
+
+// Assemble JSON-LD: organization is always present; add breadcrumbs + page schemas.
+const jsonLd: Record<string, unknown>[] = [organizationSchema()];
+if (breadcrumbs?.length) jsonLd.push(breadcrumbSchema(breadcrumbs));
+jsonLd.push(...schemas);
+---
+<!-- Primary Meta -->
+<title>{fullTitle}</title>
+<meta name="title" content={fullTitle} />
+<meta name="description" content={description} />
+{keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+<meta name="robots" content={robots} />
+<meta name="author" content={siteName} />
+<link rel="canonical" href={canonicalURL.href} />
+
+<!-- Geo Tags -->
+<meta name="geo.region" content={`US-${company.address.state}`} />
+<meta name="geo.placename" content={company.address.city} />
+<meta name="geo.position" content={`${company.geo.latitude};${company.geo.longitude}`} />
+<meta name="ICBM" content={`${company.geo.latitude}, ${company.geo.longitude}`} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={socialTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL.href} />
+<meta property="og:image" content={ogImage.href} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={socialTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage.href} />
+<meta name="twitter:site" content="@apexsolarusa" />
+
+<!-- Structured Data -->
+{jsonLd.map((block) => (
+  <script type="application/ld+json" set:html={JSON.stringify(block)} />
+))}

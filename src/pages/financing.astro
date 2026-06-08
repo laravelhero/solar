@@ -1,0 +1,69 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import Calculator from '../components/Calculator.astro';
+import FAQAccordion from '../components/FAQAccordion.astro';
+import CTA from '../components/CTA.astro';
+import Icon from '../components/Icon.astro';
+import { getFaqs } from '../data/faqs';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Financing', href: '/financing' }];
+const faqs = getFaqs(['financing', 'cost', 'tax-credit', 'commercial-roi']);
+const options = [
+  { icon: 'dollar', title: 'Solar Loan', badge: 'Most Popular', highlight: true, points: ['$0 down, own from day one', 'Claim the full 30% tax credit', 'Rates from 3.99% APR', 'Payment often below your bill'] },
+  { icon: 'check-circle', title: 'Solar Lease', points: ['$0 down, fixed monthly rate', 'No maintenance responsibility', 'Provider claims the tax credit', 'Predictable, lower payment'] },
+  { icon: 'bolt', title: 'Power Purchase (PPA)', points: ['Pay only for power produced', 'Locked-in per-kWh rate', 'No ownership or upkeep', 'Hedge against utility hikes'] },
+  { icon: 'building', title: 'Commercial / C-PACE', points: ['Off-balance-sheet options', 'Long-term PACE financing', 'Preserve working capital', 'Stack ITC + depreciation'] },
+];
+---
+<Layout
+  title="Solar Financing Options — $0 Down Loans, Leases & PPAs"
+  description="Explore Apex Solar's financing: $0-down solar loans from 3.99% APR, leases, PPAs and commercial C-PACE. Start saving from month one. Pre-qualify with no credit impact."
+  keywords={['solar financing', 'solar loans', '$0 down solar', 'solar lease', 'solar ppa', 'c-pace financing']}
+  canonical="/financing"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Financing"
+    title="Go solar with $0 down"
+    subtitle="Flexible financing that lets you start saving from month one — no big upfront check required. Find the plan that fits your goals."
+    image="/images/services/solar-financing.jpg"
+    imageAlt="Homeowner reviewing solar financing options"
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Your Options" title="Four ways to fund your solar" subtitle="Whether you want to own, lease or simply buy cheaper power, there's a path that fits." />
+      <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {options.map((o) => (
+          <div class={`relative flex flex-col p-7 ${o.highlight ? 'card ring-2 ring-solar-400' : 'card'}`}>
+            {o.badge && <span class="absolute -top-3 left-7 rounded-full bg-solar-500 px-3 py-1 text-xs font-bold text-white">{o.badge}</span>}
+            <span class={`grid size-12 place-items-center rounded-2xl ${o.highlight ? 'bg-solar-500 text-white' : 'bg-solar-50 text-solar-600 ring-1 ring-solar-100'}`}><Icon name={o.icon} class="size-6" /></span>
+            <h3 class="mt-5 font-display text-lg font-bold text-gray-900">{o.title}</h3>
+            <ul class="mt-4 flex-1 space-y-2.5">
+              {o.points.map((p) => <li class="flex items-start gap-2 text-sm text-gray-600"><Icon name="check" class="mt-0.5 size-4 shrink-0 text-grid-500" /> {p}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-gray-50">
+    <div class="container-xl">
+      <SectionTitle eyebrow="Run the Numbers" title="Estimate your payment & savings" class="mb-14" />
+      <Calculator />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-xl">
+      <SectionTitle eyebrow="FAQ" title="Financing questions" class="mb-12" />
+      <FAQAccordion faqs={faqs} />
+    </div>
+  </section>
+
+  <CTA title="Pre-qualify in minutes" subtitle="Check your rate with a soft credit check that won't affect your score. See your payment before you commit to anything." />
+</Layout>

@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------------------
+   APEX SOLAR — 2026 Design System
+   Brand tokens exposed as Tailwind utilities via the @theme directive.
+---------------------------------------------------------------------------- */
+@theme {
+  /* Primary — Solar Orange */
+  --color-solar-50: #fff7ed;
+  --color-solar-100: #ffedd5;
+  --color-solar-200: #fed7aa;
+  --color-solar-300: #fdba74;
+  --color-solar-400: #fb923c;
+  --color-solar-500: #f97316;
+  --color-solar-600: #ea580c;
+  --color-solar-700: #c2410c;
+  --color-solar-800: #9a3412;
+  --color-solar-900: #7c2d12;
+
+  /* Secondary — Energy Blue */
+  --color-energy-50: #eff6ff;
+  --color-energy-100: #dbeafe;
+  --color-energy-200: #bfdbfe;
+  --color-energy-300: #93c5fd;
+  --color-energy-400: #60a5fa;
+  --color-energy-500: #3b82f6;
+  --color-energy-600: #2563eb;
+  --color-energy-700: #1d4ed8;
+  --color-energy-800: #1e40af;
+  --color-energy-900: #1e3a8a;
+  --color-energy-950: #0f1f4d;
+
+  /* Accent — Green Energy */
+  --color-grid-50: #ecfdf5;
+  --color-grid-100: #d1fae5;
+  --color-grid-200: #a7f3d0;
+  --color-grid-300: #6ee7b7;
+  --color-grid-400: #34d399;
+  --color-grid-500: #10b981;
+  --color-grid-600: #059669;
+  --color-grid-700: #047857;
+  --color-grid-800: #065f46;
+  --color-grid-900: #064e3b;
+
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Elevation */
+  --shadow-soft: 0 1px 2px rgb(16 24 40 / 0.04), 0 12px 32px -8px rgb(16 24 40 / 0.10);
+  --shadow-glow: 0 18px 60px -12px rgb(249 115 22 / 0.45);
+}
+
+/* ----------------------------------------------------------------------------
+   Base
+---------------------------------------------------------------------------- */
+:root {
+  --header-h: 4.5rem;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+html { -webkit-text-size-adjust: 100%; text-rendering: optimizeLegibility; }
+body { @apply bg-white text-gray-800 font-sans antialiased; }
+
+::selection { @apply bg-solar-500/20 text-solar-900; }
+
+/* Focus ring for accessibility (WCAG 2.4.7) */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-energy-600);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ----------------------------------------------------------------------------
+   Reusable component classes
+---------------------------------------------------------------------------- */
+@layer components {
+  .container-xl { @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8; }
+
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold
+           transition-all duration-200 will-change-transform focus-visible:outline-2;
+  }
+  .btn-primary {
+    @apply bg-solar-500 text-white shadow-[var(--shadow-glow)]
+           hover:bg-solar-600 hover:-translate-y-0.5 active:translate-y-0;
+  }
+  .btn-secondary {
+    @apply bg-energy-700 text-white hover:bg-energy-800 hover:-translate-y-0.5;
+  }
+  .btn-ghost {
+    @apply border border-gray-200 bg-white text-gray-900 hover:border-solar-300 hover:bg-solar-50;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full bg-solar-50 px-3 py-1
+           text-xs font-semibold uppercase tracking-wider text-solar-700 ring-1 ring-solar-100;
+  }
+
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl ring-1 ring-gray-900/5;
+  }
+
+  .card {
+    @apply rounded-2xl bg-white shadow-[var(--shadow-soft)] ring-1 ring-gray-900/5;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-solar-600 via-solar-500 to-amber-400 bg-clip-text text-transparent;
+  }
+
+  .section { @apply py-16 sm:py-20 lg:py-28; }
+
+  /* Long-form prose (blog articles, legal pages) */
+  .prose-solar { @apply text-[1.0625rem] leading-8 text-gray-700; }
+  .prose-solar > * + * { @apply mt-6; }
+  .prose-solar h2 { @apply mt-12 font-display text-2xl font-bold text-gray-900 scroll-mt-28; }
+  .prose-solar h3 { @apply mt-8 font-display text-xl font-bold text-gray-900 scroll-mt-28; }
+  .prose-solar p { @apply text-pretty; }
+  .prose-solar a { @apply font-semibold text-solar-600 underline decoration-solar-200 underline-offset-2 hover:text-solar-700; }
+  .prose-solar strong { @apply font-semibold text-gray-900; }
+  .prose-solar ul { @apply list-disc space-y-2 pl-6 marker:text-solar-400; }
+  .prose-solar ol { @apply list-decimal space-y-2 pl-6 marker:font-semibold marker:text-solar-500; }
+  .prose-solar blockquote { @apply border-l-4 border-solar-300 bg-solar-50/50 py-2 pl-5 italic text-gray-600; }
+  .prose-solar h2 + p, .prose-solar h3 + p { @apply mt-3; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  /* Entrance animation, opt-in via [data-reveal] */
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  [data-reveal] { animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
