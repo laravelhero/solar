@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://www.apexsolar-usa.com',
+  site: 'https://solar.websolutiontx.com',
   trailingSlash: 'ignore',
   prefetch: {
     prefetchAll: true,
